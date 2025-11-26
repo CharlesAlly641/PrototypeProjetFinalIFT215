@@ -11,15 +11,79 @@
     <header>
         <h1>Logo de Trivio 2.0</h1>
         <nav>
-            <ul>
+            <ul id="menu-principal">
                 <li><a href="#">Accueil</a></li>
-                <li><a href="#">Mes candidatures</a></li>
-                <li><a href="#">Favoris</a></li>
-                <li><a href="#">Profil</a></li>
+                <li><a href="candidatures.html">Mes candidatures</a></li>
+                <li><a href="favoris.html">Favoris</a></li>
+                <li><a href="profil.html">Profil</a></li>
+                <button id="logout">Déconnexion</button>
             </ul>
+            
         </nav>
-        <button id="logout">Déconnexion</button>
+        
     </header>
+    <div id="filtres">
+        <fieldset>
+        <ul id="liste-filtres">
+        <li><select name="ville" id="ville-select">
+            <option value="">Région / Ville</option>
+            <option value="longueuil">Longueuil</option>
+            <option value="sherbrooke">Sherbrooke</option>
+            <option value="boucherville">Boucherville</option>
+            <option value="montreal">Montréal</option>
+            <option value="bromont">Bromont</option>
+            <option value="laval">Laval</option>
+        </select></li>
+        <li><select name="salaire" id="salaire-select">
+            <option value="">Salaire</option>
+            <option value="20">20.0$/h</option>
+            <option value="21">21.0$/h</option>
+            <option value="22">22.0$/h</option>
+            <option value="23">23.0$/h</option>
+            <option value="24">24.0$/h</option>
+            <option value="25">25.0$/h</option>
+        </select></li>
+        <li><select name="duree" id="duree-select">
+            <option value="">Durée du stage</option>
+            <option value="14">14 semaines</option>
+            <option value="15">15 semaines</option>
+            <option value="16">16 semaines</option>
+        </select></li>
+        <li><select name="type" id="type-select">
+            <option value="">Type d'entreprise</option>
+            <option value="pme">PME</option>
+            <option value="ge">GE</option>
+        </select></li>
+        <li><select name="mode" id="mode-select">
+            <option value="">Mode de travail</option>
+            <option value="presentiel">En présentiel</option>
+            <option value="maison">À la maison</option>
+            <option value="hybride">Hydride</option>
+        </select></li>
+        </ul>
+        <input type="checkbox" id="combiner" name="combiner"/>
+        <label for="combiner">Combiner plusieurs critères</label>
+        <ul id="boutons-filtres">
+            <button id="appliquer">Appliquer les filtres</button>
+            <button id="reinitialiser">Réinitialiser</button>
+        </ul>
+        </fieldset>
+    </div>
+    <span></span>
+    <span></span>
+    <span></span>
+    <div id="recherche">
+        <section id="informations">
+            <h2>Filtres actifs</h2>
+            <ul id="filtres-actifs">
+                <li>Région: Montréal</li>
+                <li>Salaire: >25$/h</li>
+            </ul>
+        </section>
+        <section id="resultats">
+
+        </section>
+    </div>
 
     <main>
 

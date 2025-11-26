@@ -1,0 +1,68 @@
+#menu-principal li{
+ display: inline-block;
+ line-height: 50px;
+ 
+ cursor: pointer;
+ padding: 0 10px;
+}
+#menu-principal{
+ 
+}
+#menu-principal li a{
+ color: black;
+ text-decoration: none;
+ font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+#menu-principal li:hover{
+ background-color: aliceblue;
+}
+#menu-principal li:hover a{
+ color: #555555;
+}
+nav{
+ text-align: center;
+ border:2px solid gray;
+}
+#filtres{
+    background-color: ghostwhite;
+    display: block;
+}
+#logout{
+    float: right;
+    line-height: 40px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    cursor: pointer;
+    width: 100px;
+    background-color: lightgray;
+    outline: none;
+}
+#boutons-filtres{
+    line-height: 50px;
+}
+#liste-filtres li{
+    display: inline-block;
+}
+#appliquer{
+    line-height: 40px;
+    width: 200px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: medium;
+    background-color: lightslategray;
+    outline: none;
+}
+#reinitialiser{
+    line-height: 40px;
+    width: 150px;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+    font-size: medium;
+    outline: none;
+    
+}
+#informations{
+    position: absolute;
+    display: block;
+    background-color: ghostwhite;
+    outline-style: double;
+    outline-color: gainsboro;
+}
+
