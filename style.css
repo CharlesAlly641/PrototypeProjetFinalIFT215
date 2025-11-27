@@ -129,7 +129,7 @@ nav{
   background-color: #992f2f;
 }
 
-/* Statuts colorés */
+/* Statuts colorés des candidatures */
 .statut.en-attente {
   color: #d59d00;
   font-weight: bold;
@@ -144,3 +144,4 @@ nav{
   color: #b22222;
   font-weight: bold;
 }
+
