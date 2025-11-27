@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mes candidatures - Trivio 2.0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <!-- Barre du haut -->
+    <header>
+        <h1>Logo de Trivio 2.0</h1>
+        <nav>
+            <ul id="menu-principal">
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="candidatures.html">Mes candidatures</a></li>
+                <li><a href="favoris.html">Favoris</a></li>
+                <li><a href="profil.html">Profil</a></li>
+                <button id="logout">Déconnexion</button>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Contenu principal -->
+    <main id="candidatures-page">
+        <h2>Mes candidatures envoyées</h2>
+        <section id="liste-candidatures">
+            <div class="candidature">
+                <h3>Stage Data Scientist - Entreprise ABC</h3>
+                <p>
+                    Date d'envoi : 18 novembre 2025<br>
+                    Statut : <span class="statut en-attente">En attente</span><br>
+                    Lieu : Montréal, QC | Salaire : 26$/h | Mode : Hybride
+                </p>
+                <button class="btn-detail">Voir la candidature</button>
+                <button class="btn-retirer">Retirer</button>
+            </div>
+
+            <div class="candidature">
+                <h3>Développeur Front-End - Studio Pixel</h3>
+                <p>
+                    Date d'envoi : 14 novembre 2025<br>
+                    Statut : <span class="statut accepte">Acceptée</span><br>
+                    Lieu : Longueuil, QC | Salaire : 23$/h | Mode : Télétravail
+                </p>
+                <button class="btn-detail">Voir la candidature</button>
+                <button class="btn-retirer">Retirer</button>
+            </div>
+
+            <div class="candidature">
+                <h3>Infographiste 3D - Vision Média</h3>
+                <p>
+                    Date d'envoi : 8 novembre 2025<br>
+                    Statut : <span class="statut refuse">Refusée</span><br>
+                    Lieu : Sherbrooke, QC | Salaire : 22$/h | Mode : Présentiel
+                </p>
+                <button class="btn-detail">Voir la candidature</button>
+                <button class="btn-retirer">Retirer</button>
+            </div>
+
+        </section>
+    </main>
+
+</body>
+</html>
