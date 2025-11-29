@@ -74,63 +74,265 @@ nav {
 ------------------------------ */
 
 #filtres {
-  background-color: ghostwhite;
-  display: block;
-  padding: 15px 20px;
-  margin-top: 10px;
-  border-top: 1px solid #e0e0e0;
+  background-color: #f6f7fb;
+  border: 1px solid #dcdcdc;
+  border-radius: 8px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 25px auto;
+  padding: 20px 25px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-family: 'Gill Sans', Calibri, sans-serif;
+}
+
+#filtres fieldset {
+  border: none;
+  padding: 0;
+  margin: 0;
+}
+
+#liste-filtres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  list-style: none;
+  padding-left: 0;
 }
 
 #liste-filtres li {
-  display: inline-block;
-  margin: 5px;
+  flex: 1;
+  min-width: 200px;
 }
 
-#appliquer {
-  line-height: 40px;
-  width: 200px;
-  font-family: 'Gill Sans', Calibri, sans-serif;
-  font-size: medium;
-  background-color: lightslategray;
-  outline: none;
-  border: none;
-  color: white;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-}
-
-#appliquer:hover {
-  background-color: #4a5c7a;
-}
-
-#reinitialiser {
-  line-height: 40px;
-  width: 150px;
-  font-family: 'Gill Sans', Calibri, sans-serif;
-  font-size: medium;
-  outline: none;
+#liste-filtres select {
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
   border: 1px solid #ccc;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: white;
+  background-color: #fff;
+  font-size: 15px;
+  transition: border-color 0.2s ease;
 }
 
-#reinitialiser:hover {
-  background-color: #f1f1f1;
+#liste-filtres select:focus {
+  border-color: #3b4c6b;
+  outline: none;
+}
+
+/* Checkbox + boutons */
+#filtres label {
+  font-size: 15px;
+  color: #333;
 }
 
 #boutons-filtres {
-  line-height: 50px;
+  margin-top: 15px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
-/* Filtres actifs */
+/* Boutons filtres */
+#appliquer {
+  background-color: #3b4c6b;
+  color: white;
+  border: none;
+  padding: 10px 22px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+#appliquer:hover {
+  background-color: #2e3954;
+}
+
+#reinitialiser {
+  background-color: #e5e6ea;
+  border: 1px solid #ccc;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  color: #333;
+  transition: background-color 0.3s ease;
+}
+
+#reinitialiser:hover {
+  background-color: #d9dadd;
+}
+
+/* Filtres actifs (sidebar gauche) */
 #informations {
-  position: absolute;
-  display: block;
-  background-color: ghostwhite;
-  outline-style: double;
-  outline-color: gainsboro;
+  background-color: #f8f9fd;
+  padding: 15px;
+  border-radius: 8px;
+  width: 250px;
+  border: 1px solid #ddd;
+  height: fit-content;
+}
+
+#informations h2 {
+  font-size: 1.1em;
+  color: #3b4c6b;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 4px;
+}
+
+#informations ul {
+  list-style: none;
+  padding-left: 10px;
+  margin-bottom: 18px;
+}
+
+#informations li {
+  font-size: 0.95em;
+  margin: 4px 0;
+}
+
+/* -----------------------------
+   LAYOUT ACCUEIL (2 colonnes)
+------------------------------ */
+
+#contenu-accueil {
+  display: flex;
+  justify-content: space-between;
+  gap: 30px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 30px auto;
+  font-family: 'Gill Sans', Calibri, sans-serif;
+}
+
+/* Barre de recherche */
+#recherche {
+  width: 90%;
+  max-width: 1200px;
+  margin: 25px auto 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+#barre-recherche {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 15px;
+}
+
+#btn-rechercher {
+  padding: 10px 18px;
+  background-color: #3b4c6b;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+#btn-rechercher:hover {
+  background-color: #2f3a57;
+}
+
+/* Résultats */
+#resultats {
+  flex: 1;
+  background-color: white;
+}
+
+#resultats h2 {
+  border-bottom: 2px solid #3b4c6b;
+  padding-bottom: 6px;
+  margin-bottom: 18px;
+  color: #333;
+}
+
+/* Offres (cartes) */
+.offre {
+  border: 1px solid #ddd;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 15px;
+  transition: transform 0.2s ease;
+}
+
+.offre:hover {
+  transform: scale(1.01);
+}
+
+.offre-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+}
+
+.badge {
+  background-color: #3b4c6b;
+  color: white;
+  font-size: 0.8em;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.offre-actions {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+}
+
+.btn-secondaire {
+  background-color: #e4e6eb;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondaire:hover {
+  background-color: #d2d5da;
+}
+
+.btn-delete {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 6px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-delete:hover {
+  background-color: #f3f3f3;
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  gap: 6px;
+  margin-top: 20px;
+}
+
+.pagination .page {
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.pagination .page.active {
+  background-color: #3b4c6b;
+  color: white;
+  border-color: #3b4c6b;
 }
 
 /* -----------------------------
@@ -225,7 +427,7 @@ button {
   font-family: 'Gill Sans', Calibri, sans-serif;
 }
 
-/* --- Détails de candidature (animation fluide) --- */
+/* --- Détails de candidature (animation) --- */
 .candidature-details {
   max-height: 0;
   opacity: 0;
@@ -242,7 +444,7 @@ button {
 
 /* Quand actif */
 .candidature-details.show {
-  max-height: 400px; /* hauteur suffisante pour le contenu */
+  max-height: 400px;
   opacity: 1;
   padding: 12px;
 }

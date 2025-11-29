@@ -26,6 +26,14 @@
         <button id="logout">Déconnexion</button>
     </header>
 
+    <main id="accueil">
+        <!-- Barre de recherche -->
+        <section id="recherche">
+            <input type="text" id="barre-recherche" placeholder="Rechercher un stage (ex : génie mécanique, écologie, physique)">
+            <button id="btn-rechercher">Rechercher</button>
+        </section>
+    </main>
+
     <!--Section de filtres-->
     <div id="filtres">
         <fieldset>
@@ -67,8 +75,10 @@
         </select></li>
         </ul>
 
-        <input type="checkbox" id="combiner" name="combiner"/>
-        <label for="combiner">Combiner plusieurs critères</label>
+        <label>
+          <input type="checkbox" id="combiner" name="combiner"> Combiner plusieurs critères
+        </label>
+
         <ul id="boutons-filtres">
             <button id="appliquer">Appliquer les filtres</button>
             <button id="reinitialiser">Réinitialiser</button>
@@ -76,20 +86,75 @@
         </fieldset>
     </div>
 
-    <!-- Contenu menu -->
-    <div id="recherche">
+    <!-- Colonne latérale + résultats -->
+    <div id="contenu-accueil">
+      <aside id="informations">
+        <h2>Filtres actifs</h2>
+        <ul id="filtres-actifs">
+          <li>Région : Montréal</li>
+          <li>Salaire : >25$/h</li>
+        </ul>
 
-        <section id="informations">
-            <h2>Filtres actifs</h2>
-            <ul id="filtres-actifs">
-                <li>Région: Montréal</li>
-                <li>Salaire: >25$/h</li>
-            </ul>
-        </section>
-    
+        <h2>Recherches récentes</h2>
+        <ul>
+          <li>Génie mécanique, Estrie</li>
+          <li>Écologie, Stage Hiver</li>
+        </ul>
+
+        <h2>Recherches enregistrées</h2>
+        <ul>
+          <li>Stage Data Scientist</li>
+          <li>Alternance Marketing</li>
+        </ul>
+      </aside>
+
+      <section id="resultats">
+        <h2>Résultats de recherche</h2>
+
+        <div class="offre">
+          <div class="offre-header">
+            <div>
+              <h3>Nom de l'entreprise 1</h3>
+              <p><strong>Titre du poste :</strong> Stage Data Scientist</p>
+              <p>Lieu : Boucherville, QC | Salaire : 26$/h | Durée : 6 mois | Mode : Présentiel</p>
+              <p>Programmes compatibles : Génie, Écologie, Physique</p>
+            </div>
+            <span class="badge">NOUVEAU</span>
+          </div>
+          <div class="offre-actions">
+            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
+            <button class="btn-delete">🗑️</button>
+          </div>
+        </div>
+
+        <div class="offre">
+          <div class="offre-header">
+            <div>
+              <h3>Nom de l'entreprise 2</h3>
+              <p><strong>Titre du poste :</strong> Développeur Front-End</p>
+              <p>Lieu : Montréal, QC | Salaire : 23$/h | Durée : 4 mois | Mode : Hybride</p>
+              <p>Programmes compatibles : Informatique, Marketing</p>
+            </div>
+            <span class="badge">NOUVEAU</span>
+          </div>
+          <div class="offre-actions">
+            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
+            <button class="btn-delete">🗑️</button>
+          </div>
+        </div>
+
+        <div class="pagination">
+          <button>&lt;</button>
+          <button class="page active">1</button>
+          <button class="page">2</button>
+          <button class="page">3</button>
+          <button>&gt;</button>
+        </div>
+      </section>
     </div>
-
-    <main></main>
+  </main>
 
     <script src="script.js"></script>
 </body>
