@@ -77,8 +77,8 @@ nav {
   background-color: #f6f7fb;
   border: 1px solid #dcdcdc;
   border-radius: 8px;
-  width: 90%;
-  max-width: 1200px;
+  width: 95%;
+  max-width: 1600px;
   margin: 25px auto;
   padding: 20px 25px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.05);
@@ -170,29 +170,33 @@ nav {
   background-color: #f8f9fd;
   padding: 15px;
   border-radius: 8px;
-  width: 250px;
+  width: 320px;
   border: 1px solid #ddd;
   height: fit-content;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+  font-size: 1rem; 
+  line-height: 1.5;
 }
 
 #informations h2 {
-  font-size: 1.1em;
+  font-size: 1.15em;
   color: #3b4c6b;
-  margin-bottom: 6px;
+  margin-bottom: 10px;
   border-bottom: 1px solid #ccc;
-  padding-bottom: 4px;
+  padding-bottom: 6px;
 }
 
 #informations ul {
   list-style: none;
-  padding-left: 10px;
-  margin-bottom: 18px;
+  padding-left: 0;
+  margin-bottom: 20px;
 }
 
 #informations li {
-  font-size: 0.95em;
-  margin: 4px 0;
+  margin-bottom: 8px;
+  color: #333;
 }
+
 
 /* -----------------------------
    LAYOUT ACCUEIL (2 colonnes)
@@ -202,16 +206,16 @@ nav {
   display: flex;
   justify-content: space-between;
   gap: 30px;
-  width: 90%;
-  max-width: 1200px;
+  width: 100%;
+  max-width: 1600px;
   margin: 30px auto;
   font-family: 'Gill Sans', Calibri, sans-serif;
 }
 
 /* Barre de recherche */
 #recherche {
-  width: 90%;
-  max-width: 1200px;
+  width: 95%;
+  max-width: 1600px;
   margin: 25px auto 10px;
   display: flex;
   justify-content: space-between;
