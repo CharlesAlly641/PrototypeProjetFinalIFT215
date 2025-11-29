@@ -1,138 +1,143 @@
-
 /* -----------------------
-   HEADER 
+   HEADER GLOBAL
 ------------------------ */
 
 header {
-  background-color: #fff;
-  border-bottom: 2px solid #d0d0d0;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
-  padding: 10px 0;
-  font-family: 'Gill Sans', Calibri, sans-serif;
-}
-
-.header-container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  background-color: #ffffff;
+  border-bottom: 2px solid #dcdcdc;
+  padding: 15px 50px;
+  height: 85px; 
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
-.logo {
-  font-size: 1.4em;
-  font-weight: bold;
-  color: #1c1c1c;
+/* LOGO */
+.logo img {
+  height: 110px; 
+  width: auto;
+  display: block;
 }
 
-nav ul {
+/* MENU PRINCIPAL */
+#menu-principal {
   list-style: none;
-  display: flex;
-  gap: 30px;
   margin: 0;
   padding: 0;
 }
 
-nav ul li a {
+#menu-principal li {
+  display: inline-block;
+  margin: 0 25px;
+}
+
+#menu-principal li a {
   color: #333;
   text-decoration: none;
+  font-size: 18px;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: color 0.3s ease;
 }
 
-nav ul li a:hover {
-  color: #4267b2;
+#menu-principal li a:hover {
+  color: #ff6b35;
 }
 
+/* BOUTON DECONNEXION */
 #logout {
-  background-color: #ccc;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 5px;
+  background-color: #e3e3e3;
+  border: 1px solid #bbb;
+  padding: 10px 22px;
+  border-radius: 6px;
   cursor: pointer;
   font-weight: 500;
-  transition: background-color 0.2s ease;
+  font-size: 16px;
+  transition: background-color 0.3s ease, transform 0.1s ease;
 }
 
 #logout:hover {
-  background-color: #aaa;
+  background-color: #ff6b35;
+  color: white;
+  transform: scale(1.05);
 }
 
-
-#menu-principal li{
- display: inline-block;
- line-height: 50px;
- 
- cursor: pointer;
- padding: 0 10px;
-}
-#menu-principal{
- 
-}
-#menu-principal li a{
- color: black;
- text-decoration: none;
- font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-}
-#menu-principal li:hover{
- background-color: aliceblue;
-}
-#menu-principal li:hover a{
- color: #555555;
-}
-nav{
- text-align: center;
- border:2px solid gray;
-}
-#filtres{
-    background-color: ghostwhite;
-    display: block;
-}
-#logout{
-    float: right;
-    line-height: 40px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    cursor: pointer;
-    width: 100px;
-    background-color: lightgray;
-    outline: none;
-}
-#boutons-filtres{
-    line-height: 50px;
-}
-#liste-filtres li{
-    display: inline-block;
-}
-#appliquer{
-    line-height: 40px;
-    width: 200px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: medium;
-    background-color: lightslategray;
-    outline: none;
-}
-#reinitialiser{
-    line-height: 40px;
-    width: 150px;
-    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-    font-size: medium;
-    outline: none;
-    
-}
-#informations{
-    position: absolute;
-    display: block;
-    background-color: ghostwhite;
-    outline-style: double;
-    outline-color: gainsboro;
+/* Barre de navigation  */
+nav {
+  flex-grow: 1;
+  text-align: center;
 }
 
 /* -----------------------------
-   Page "MES CANDIDATURES"       
- -------------------------------*/ 
+   FILTRES INDEX (Page principale)
+------------------------------ */
 
- #candidatures-page {
+#filtres {
+  background-color: ghostwhite;
+  display: block;
+  padding: 15px 20px;
+  margin-top: 10px;
+  border-top: 1px solid #e0e0e0;
+}
+
+#liste-filtres li {
+  display: inline-block;
+  margin: 5px;
+}
+
+#appliquer {
+  line-height: 40px;
+  width: 200px;
+  font-family: 'Gill Sans', Calibri, sans-serif;
+  font-size: medium;
+  background-color: lightslategray;
+  outline: none;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+#appliquer:hover {
+  background-color: #4a5c7a;
+}
+
+#reinitialiser {
+  line-height: 40px;
+  width: 150px;
+  font-family: 'Gill Sans', Calibri, sans-serif;
+  font-size: medium;
+  outline: none;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: white;
+}
+
+#reinitialiser:hover {
+  background-color: #f1f1f1;
+}
+
+#boutons-filtres {
+  line-height: 50px;
+}
+
+/* Filtres actifs */
+#informations {
+  position: absolute;
+  display: block;
+  background-color: ghostwhite;
+  outline-style: double;
+  outline-color: gainsboro;
+}
+
+/* -----------------------------
+   PAGE "MES CANDIDATURES"       
+-------------------------------*/
+
+#candidatures-page {
   width: 80%;
   margin: 30px auto;
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
@@ -177,6 +182,7 @@ nav{
   border-radius: 4px;
   cursor: pointer;
   margin-right: 6px;
+  transition: background-color 0.2s ease;
 }
 
 .btn-retirer {
@@ -191,7 +197,7 @@ nav{
   background-color: #992f2f;
 }
 
-/* Statuts colorés des candidatures */
+/* Statuts colorés */
 .statut.en-attente {
   color: #d59d00;
   font-weight: bold;
@@ -207,3 +213,14 @@ nav{
   font-weight: bold;
 }
 
+/* -----------------------------
+   GÉNÉRAL
+-------------------------------*/
+body {
+  margin: 0;
+  background-color: #ffffff;
+}
+
+button {
+  font-family: 'Gill Sans', Calibri, sans-serif;
+}
