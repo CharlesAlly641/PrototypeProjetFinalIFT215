@@ -398,8 +398,8 @@ document.addEventListener("DOMContentLoaded", () => {
   // Render on load if favoris container exists
   renderFavorisList();
 
-  // --- Toast notifications ---
-  // Create container
+  // --- Notif toast ---
+  // Creation du container
   (function createToastContainer(){
     if (document.getElementById('toast-container')) return;
     const c = document.createElement('div');
@@ -422,7 +422,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }, timeout);
   }
 
-  // --- Confirm modal (replacement for window.confirm) ---
+  // --- Confirmation modale  ---
   function showConfirm(message) {
     return new Promise(resolve => {
       let modal = document.getElementById('confirm-modal');
@@ -465,22 +465,22 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Delegated handlers for candidature actions so dynamically-rendered favoris work
+  // Gestion déléguée des actions de candidature pour que les favoris dynamiques fonctionnent aussi
   document.addEventListener('click', (e) => {
-    // Retirer button inside a .candidature (works for Mes candidatures and Favoris)
+    // Bouton "Retirer" à l'intérieur d'une .candidature (fonctionne pour "Mes candidatures" et "Favoris")
     const retirerBtn = e.target.closest('.btn-retirer');
     if (retirerBtn) {
       const candidature = retirerBtn.closest('.candidature');
       if (!candidature) return;
       showConfirm("Voulez-vous vraiment retirer cette candidature ?").then(confirmed => {
         if (!confirmed) return;
-        // If this candidature corresponds to a favori (has data-id), remove from storage
+        // Si cette candidature correspond à un favori (possède un data-id), la retirer du stockage
         const favId = candidature.dataset.id;
         if (favId) {
           removeFavori(favId);
           showToast('Offre retirée des favoris.');
         } else {
-          // just animate removal for non-favoris candidatures
+          // Sinon, animer simplement la suppression pour les candidatures non enregistrées en favoris
           candidature.style.transition = 'opacity 0.4s ease';
           candidature.style.opacity = 0;
           setTimeout(() => candidature.remove(), 400);
