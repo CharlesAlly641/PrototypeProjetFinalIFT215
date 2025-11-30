@@ -452,3 +452,80 @@ button {
   opacity: 1;
   padding: 12px;
 }
+
+/* Toast notifications */
+#toast-container {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+}
+
+.toast {
+  background: rgba(59,76,107,0.95);
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+  transform: translateY(12px) scale(0.98);
+  opacity: 0;
+  transition: transform 220ms ease, opacity 220ms ease;
+  font-weight: 500;
+}
+
+.toast.show {
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+/* Confirm modal styles */
+#confirm-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+}
+
+#confirm-modal .confirm-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+#confirm-modal .confirm-content {
+  background: #fff;
+  border-radius: 8px;
+  padding: 18px;
+  max-width: 480px;
+  width: 100%;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+#confirm-modal #confirm-message {
+  margin: 0 0 12px 0;
+  font-size: 1rem;
+  color: #222;
+}
+
+#confirm-modal .confirm-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+#confirm-modal .confirm-actions .btn-secondaire {
+  background-color: #3b4c6b;
+  color: #fff;
+}
+
+#confirm-modal .confirm-actions .btn-delete {
+  background-color: #eee;
+  border: 1px solid #ccc;
+}
