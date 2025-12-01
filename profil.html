@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mon profil - Trivio 2.0</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header>
+    <div class="logo">
+      <img src="logo-trivio.png" alt="Logo Trivio 2.0">
+    </div>
+
+    <nav>
+      <ul id="menu-principal">
+        <li><a href="index.html">Accueil</a></li>
+        <li><a href="candidatures.html">Mes candidatures</a></li>
+        <li><a href="favoris.html">Favoris</a></li>
+        <li><a href="profil.html" class="active">Profil</a></li>
+      </ul>
+    </nav>
+
+    <button id="logout">Déconnexion</button>
+  </header>
+
+  <main id="profil-page">
+    <h1>Mon profil</h1>
+
+    <!-- Section Informations personnelles -->
+    <section class="profil-section">
+      <h2>Informations personnelles</h2>
+      <div class="profil-info">
+        <p><strong>Nom complet :</strong> Samuel Montembeault</p>
+        <p><strong>Courriel :</strong> passoire@gmail.com</p>
+        <p><strong>Téléphone :</strong> (514) 123-4567</p>
+        <p><strong>Ville :</strong> Montréal, QC</p>
+        <p><strong>Date de naissance :</strong> 14 mai 2002</p>
+      </div>
+    </section>
+
+    <!-- Section Éducation -->
+    <section class="profil-section">
+      <h2>Éducation</h2>
+      <div class="profil-info">
+        <p><strong>Programme :</strong> Baccalauréat en informatique</p>
+        <p><strong>Université :</strong> Université de Sherbrooke</p>
+        <p><strong>Année d'étude :</strong> 3e année</p>
+        <p><strong>Moyenne cumulative :</strong> 3.5 / 4.3</p>
+      </div>
+    </section>
+
+    <!-- Section Compétences -->
+    <section class="profil-section">
+      <h2>Compétences</h2>
+      <ul class="profil-list">
+        <li>Programmation C++, C#, Python</li>
+        <li>Développement Unity et Unreal Engine</li>
+        <li>SQL, modélisation de bases de données</li>
+        <li>HTML, CSS, JavaScript</li>
+        <li>Conception 3D, animation et audio numérique</li>
+      </ul>
+    </section>
+
+    <!-- Section Préférences de stage -->
+    <section class="profil-section">
+      <h2>Préférences de stage</h2>
+      <div class="profil-info">
+        <p><strong>Type d'entreprise recherchée :</strong> PME ou studio de jeux vidéo</p>
+        <p><strong>Mode de travail préféré :</strong> Hybride</p>
+        <p><strong>Disponibilité :</strong> Été 2026 (mai à août)</p>
+        <p><strong>Région souhaitée :</strong> Laval / Montréal</p>
+      </div>
+    </section>
+
+    <!-- Section Modifier profil -->
+    <section class="profil-section">
+      <h2>Modifier mes informations</h2>
+      <button id="btn-edit" class="btn-secondaire">Modifier le profil</button>
+    </section>
+  </main>
+
+  <script>
+    document.getElementById('btn-edit').addEventListener('click', () => {
+      alert("La fonction de modification du profil sera disponible prochainement !");
+    });
+  </script>
+</body>
+</html>
