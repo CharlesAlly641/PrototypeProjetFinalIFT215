@@ -29,8 +29,9 @@
     <main id="accueil">
         <!-- Barre de recherche -->
         <section id="recherche">
-            <input type="text" id="barre-recherche" placeholder="Rechercher un stage (ex : génie mécanique, écologie, physique)">
-            <button id="btn-rechercher">Rechercher</button>
+          <input type="text" id="barre-recherche" placeholder="Rechercher un stage (ex : génie mécanique, écologie, physique)">
+          <button id="btn-rechercher">Rechercher</button>
+          <button id="save-search-btn">Enregistrer la recherche</button>
         </section>
     </main>
 
@@ -74,6 +75,10 @@
         <ul id="boutons-filtres">
           <button id="appliquer">Appliquer les filtres</button>
           <button id="reinitialiser">Réinitialiser</button>
+          <select id="saved-filters-select" aria-label="Filtres enregistrés">
+            <option value="">Filtres enregistrés</option>
+          </select>
+          <button id="save-filters-btn">Enregistrer les filtres</button>
         </ul>
         </fieldset>
     </div>
@@ -83,20 +88,17 @@
       <aside id="informations">
         <h2>Filtres actifs</h2>
         <ul id="filtres-actifs">
-          <li>Région : Montréal</li>
-          <li>Salaire : >25$/h</li>
+          <!-- Rempli dynamiquement par script.js -->
         </ul>
 
         <h2>Recherches récentes</h2>
-        <ul>
-          <li>Génie mécanique, Estrie</li>
-          <li>Écologie, Stage Hiver</li>
+        <ul id="recent-searches-list">
+          <!-- Rempli dynamiquement par script.js -->
         </ul>
 
         <h2>Recherches enregistrées</h2>
-        <ul>
-          <li>Stage Data Scientist</li>
-          <li>Alternance Marketing</li>
+        <ul id="saved-searches-list">
+          <!-- Rempli dynamiquement par script.js -->
         </ul>
       </aside>
 
@@ -114,7 +116,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -131,7 +133,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -148,7 +150,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -165,7 +167,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -182,7 +184,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -199,7 +201,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -216,7 +218,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -233,7 +235,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -250,7 +252,7 @@
             <span class="badge">NOUVEAU</span>
           </div>
           <div class="offre-actions">
-            <button class="btn-secondaire">Voir les détails</button>
+            <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
             <button class="btn-delete">🗑️</button>
           </div>
@@ -263,6 +265,15 @@
           <button class="page">3</button>
           <button>&gt;</button>
         </div>
+      </section>
+      <!-- Detail view (hidden by default) -->
+      <section id="detail-view" style="display:none; width:100%; max-width:1600px; margin:30px auto;">
+        <div class="detail-controls" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <button id="detail-back" class="btn-secondaire">Retour</button>
+          <h2 id="detail-title" style="margin:0;">Détails de l'offre</h2>
+          <div></div>
+        </div>
+        <div id="detail-content" style="background:#fff; padding:16px; border-radius:6px; border:1px solid #ddd;"></div>
       </section>
     </div>
   </main>

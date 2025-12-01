@@ -323,6 +323,20 @@ document.addEventListener("DOMContentLoaded", () => {
       checks.push(modeVal && modeVal.indexOf(m) !== -1);
     }
 
+    // Search term: match company, title or any text
+    if (filters.search) {
+      const s = normalizeString(filters.search);
+      if (s.length === 0) {
+        checks.push(true);
+      } else {
+        const company = normalizeString(header.querySelector('h3')?.textContent || '');
+        const title = normalizeString(pTags[0] ? pTags[0].textContent.replace(/Titre du poste\s*:\s*/i, '') : '');
+        const combined = normalizeString(offreEl.textContent || '');
+        const found = (company && company.indexOf(s) !== -1) || (title && title.indexOf(s) !== -1) || (combined && combined.indexOf(s) !== -1);
+        checks.push(!!found);
+      }
+    }
+
     if (checks.length === 0) return true;
     // Combine multiple active filters using AND: all checks must pass
     return checks.every(Boolean);
@@ -335,8 +349,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const type = document.getElementById('type-select')?.value || '';
     const mode = document.getElementById('mode-select')?.value || '';
     const combiner = document.getElementById('combiner')?.checked || false;
+    const search = document.getElementById('barre-recherche')?.value || '';
 
-    const filters = { ville, salaire, duree, type, mode, combiner };
+    const filters = { ville, salaire, duree, type, mode, combiner, search };
+
+    // Save recent search term (if any)
+    try { if (search && search.toString().trim().length) saveRecentSearch(search); } catch (err) { }
+    // do not auto-save to 'saved searches' — that's explicit with "Enregistrer la recherche" button
 
     // Ensure data attrs exist for all offers
     normalizeAllOffers();
@@ -367,6 +386,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (pagination) {
       pagination.style.display = visibleCount === 0 ? 'none' : 'flex';
     }
+    // Update the active filters display
+    try { renderActiveFilters(filters); } catch (err) { /* ignore if not available */ }
   }
 
   function resetFilters() {
@@ -379,6 +400,10 @@ document.addEventListener("DOMContentLoaded", () => {
     // show all and hide no-results
     document.querySelectorAll('.offre').forEach(o => o.style.display = '');
     const noEl = document.getElementById('no-results-msg'); if (noEl) noEl.style.display = 'none';
+    // clear search input
+    const searchInput = document.getElementById('barre-recherche'); if (searchInput) searchInput.value = '';
+    // update active filters display
+    try { renderActiveFilters({}); } catch (err) { }
   }
 
   // Bind buttons
@@ -386,6 +411,223 @@ document.addEventListener("DOMContentLoaded", () => {
   if (btnAppliquer) btnAppliquer.addEventListener('click', applyFilters);
   const btnReset = document.getElementById('reinitialiser');
   if (btnReset) btnReset.addEventListener('click', resetFilters);
+
+  // Wire search button and Enter key on search input
+  const btnSearch = document.getElementById('btn-rechercher');
+  const searchInput = document.getElementById('barre-recherche');
+  if (btnSearch) btnSearch.addEventListener('click', applyFilters);
+  if (searchInput) searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } });
+
+  // --- Saved filter sets (localStorage) ---
+  const SAVED_FILTERS_KEY = 'saved_filter_sets';
+
+  function getSavedFilterSets() {
+    try {
+      return JSON.parse(localStorage.getItem(SAVED_FILTERS_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveSavedFilterSets(list) {
+    localStorage.setItem(SAVED_FILTERS_KEY, JSON.stringify(list));
+  }
+
+  function renderSavedFiltersDropdown() {
+    const sel = document.getElementById('saved-filters-select');
+    if (!sel) return;
+    const sets = getSavedFilterSets();
+    sel.innerHTML = '<option value="">Filtres enregistrés</option>';
+    sets.forEach(s => {
+      const opt = document.createElement('option');
+      opt.value = s.name;
+      opt.textContent = s.name;
+      sel.appendChild(opt);
+    });
+  }
+
+  // Recent searches (saved in localStorage): render and manage
+  const RECENT_SEARCHES_KEY = 'recent_searches';
+
+  function getRecentSearches() {
+    try {
+      return JSON.parse(localStorage.getItem(RECENT_SEARCHES_KEY) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveRecentSearch(term) {
+    try {
+      const t = (term || '').toString().trim();
+      if (!t) return;
+      let list = getRecentSearches();
+      const lower = t.toLowerCase();
+      // remove duplicates (case-insensitive)
+      list = list.filter(s => s.toLowerCase() !== lower);
+      list.unshift(t);
+      // keep only most recent 6
+      if (list.length > 6) list = list.slice(0, 6);
+      localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(list));
+      renderRecentSearches();
+    } catch (err) {
+      // ignore
+    }
+  }
+
+  function renderRecentSearches() {
+    const ul = document.getElementById('recent-searches-list');
+    if (!ul) return;
+    const list = getRecentSearches();
+    ul.innerHTML = '';
+    if (!list || list.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = 'Aucune recherche récente.';
+      ul.appendChild(li);
+      return;
+    }
+    list.forEach(s => {
+      const li = document.createElement('li');
+      li.className = 'recent-search-item';
+      li.style.cursor = 'pointer';
+      li.title = 'Cliquer pour relancer cette recherche';
+      li.textContent = s;
+      ul.appendChild(li);
+    });
+  }
+
+  // Saved searches (persisted list of saved search terms)
+  const SAVED_SEARCHES_KEY = 'saved_searches';
+
+  function getSavedSearches() {
+    try { return JSON.parse(localStorage.getItem(SAVED_SEARCHES_KEY) || '[]'); } catch (e) { return []; }
+  }
+
+  function saveSavedSearch(term) {
+    const t = (term || '').toString().trim();
+    if (!t) { showToast('Recherche vide — impossible d\'enregistrer.'); return; }
+    let list = getSavedSearches();
+    // remove duplicates (case-insensitive)
+    const lower = t.toLowerCase();
+    list = list.filter(s => s.toLowerCase() !== lower);
+    list.unshift(t);
+    if (list.length > 12) list = list.slice(0, 12);
+    localStorage.setItem(SAVED_SEARCHES_KEY, JSON.stringify(list));
+    renderSavedSearches();
+    showToast('Recherche enregistrée.');
+  }
+
+  function renderSavedSearches() {
+    const ul = document.getElementById('saved-searches-list');
+    if (!ul) return;
+    const list = getSavedSearches();
+    ul.innerHTML = '';
+    if (!list || list.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = 'Aucune recherche enregistrée.';
+      ul.appendChild(li);
+      return;
+    }
+    list.forEach(s => {
+      const li = document.createElement('li');
+      li.className = 'saved-search-item';
+      li.style.cursor = 'pointer';
+      li.title = 'Cliquer pour mettre dans la barre de recherche';
+      li.textContent = s;
+      ul.appendChild(li);
+    });
+  }
+
+  // Render the active filters in the sidebar `#filtres-actifs`
+  function renderActiveFilters(filters) {
+    const container = document.getElementById('filtres-actifs');
+    if (!container) return;
+    container.innerHTML = '';
+    filters = filters || {};
+    const items = [];
+    if (filters.search) items.push({ label: 'Recherche', value: filters.search });
+    if (filters.ville) items.push({ label: 'Région', value: filters.ville });
+    if (filters.salaire) items.push({ label: 'Salaire', value: (filters.salaire.toString().length ? filters.salaire + '$/h' : filters.salaire) });
+    if (filters.duree) items.push({ label: 'Durée', value: (filters.duree.toString().length ? filters.duree + ' semaines' : filters.duree) });
+    if (filters.mode) items.push({ label: 'Mode', value: filters.mode });
+    if (filters.type) items.push({ label: 'Type', value: filters.type });
+
+    if (items.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = 'Aucun filtre actif.';
+      container.appendChild(li);
+      return;
+    }
+
+    items.forEach(it => {
+      const li = document.createElement('li');
+      li.innerHTML = `<strong>${it.label} :</strong> ${it.value}`;
+      container.appendChild(li);
+    });
+  }
+
+  function saveCurrentFilterSet() {
+    const name = prompt('Nommer cet ensemble de filtres:');
+    if (!name) { showToast('Nom non fourni.'); return; }
+    const sets = getSavedFilterSets();
+    const existing = sets.find(s => s.name === name);
+
+    function doSave() {
+      const filters = {
+        ville: document.getElementById('ville-select')?.value || '',
+        salaire: document.getElementById('salaire-select')?.value || '',
+        duree: document.getElementById('duree-select')?.value || '',
+        type: document.getElementById('type-select')?.value || '',
+        mode: document.getElementById('mode-select')?.value || '',
+        combiner: document.getElementById('combiner')?.checked || false
+      };
+      if (existing) {
+        existing.filters = filters;
+      } else {
+        sets.push({ name, filters });
+      }
+      saveSavedFilterSets(sets);
+      renderSavedFiltersDropdown();
+      showToast('Filtres enregistrés.');
+    }
+
+    if (existing) {
+      showConfirm('Un ensemble existe déjà avec ce nom. Le remplacer ?').then(ok => { if (ok) doSave(); });
+    } else {
+      doSave();
+    }
+  }
+
+  // Wire save button
+  const saveFiltersBtn = document.getElementById('save-filters-btn');
+  if (saveFiltersBtn) saveFiltersBtn.addEventListener('click', saveCurrentFilterSet);
+
+  // Wire dropdown apply
+  const savedSel = document.getElementById('saved-filters-select');
+  if (savedSel) savedSel.addEventListener('change', (e) => {
+    const name = (e.target.value || '').toString();
+    if (!name) return;
+    const set = getSavedFilterSets().find(s => s.name === name);
+    if (!set || !set.filters) return;
+    const f = set.filters;
+    const mapSet = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+    mapSet('ville-select', f.ville);
+    mapSet('salaire-select', f.salaire);
+    mapSet('duree-select', f.duree);
+    mapSet('type-select', f.type);
+    mapSet('mode-select', f.mode);
+    const comb = document.getElementById('combiner'); if (comb) comb.checked = !!f.combiner;
+    applyFilters();
+  });
+
+  // initialize saved filters dropdown
+  renderSavedFiltersDropdown();
+  // initialize active filters display (none active at start)
+  try { renderActiveFilters({}); } catch (err) { }
+  // initialize recent searches list
+  try { renderRecentSearches(); } catch (err) { }
+  // initialize saved searches list
+  try { renderSavedSearches(); } catch (err) { }
 
   // If on favoris page, handle remove clicks and render
   document.addEventListener('click', (e) => {
@@ -398,6 +640,81 @@ document.addEventListener("DOMContentLoaded", () => {
     showConfirm('Supprimer cette offre des favoris ?').then(confirmed => {
       if (confirmed) removeFavori(id);
     });
+  });
+
+  // Click-to-reuse for recent searches: delegate to the list
+  const recentUl = document.getElementById('recent-searches-list');
+  if (recentUl) {
+    recentUl.addEventListener('click', (e) => {
+      const li = e.target.closest('.recent-search-item');
+      if (!li) return;
+      const term = li.textContent || '';
+      const input = document.getElementById('barre-recherche');
+      if (input) input.value = term;
+      applyFilters();
+    });
+  }
+
+  // Click-to-use for saved searches
+  const savedUl = document.getElementById('saved-searches-list');
+  if (savedUl) {
+    savedUl.addEventListener('click', (e) => {
+      const li = e.target.closest('.saved-search-item');
+      if (!li) return;
+      const term = li.textContent || '';
+      const input = document.getElementById('barre-recherche');
+      if (input) input.value = term;
+      applyFilters();
+    });
+  }
+
+  // Wire save-search button
+  const saveSearchBtn = document.getElementById('save-search-btn');
+  if (saveSearchBtn) saveSearchBtn.addEventListener('click', () => {
+    const term = (document.getElementById('barre-recherche')?.value || '').toString().trim();
+    if (!term) { showToast('Tapez une recherche avant d\'enregistrer.'); return; }
+    saveSavedSearch(term);
+  });
+
+  // Open a new tab showing the screenshot and a Retour button
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-voir');
+    if (!btn) return;
+    // try to open a new tab/window
+    const newWin = window.open('', '_blank');
+    if (!newWin) {
+      showToast('Impossible d\'ouvrir un nouvel onglet (popup bloquée).');
+      return;
+    }
+    const imgPath = 'detail-offre.png';
+    const title = btn.closest('.offre')?.querySelector('h3')?.textContent || 'Détails de l\'offre';
+    const html = `<!doctype html>
+      <html lang="fr">
+      <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width,initial-scale=1">
+        <title>${escapeHtml(title)}</title>
+        <style>body{font-family:Arial,Helvetica,sans-serif;margin:0;padding:20px;background:#f6f7fb;color:#222}img{max-width:100%;height:auto;display:block;margin-bottom:12px}header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}button{background:#3b4c6b;color:#fff;border:none;padding:10px 14px;border-radius:6px;cursor:pointer}button:active{transform:translateY(1px)}</style>
+      </head>
+      <body>
+        <header>
+          <h1 style="font-size:1.1rem;margin:0">${escapeHtml(title)}</h1>
+          <button id="retour">Retour</button>
+        </header>
+        <main>
+          <img src="${imgPath}" alt="Détails de l'offre" onerror="this.style.display='none'">
+        </main>
+        <script>document.getElementById('retour').addEventListener('click', ()=>{window.close();});</script>
+      </body>
+      </html>`;
+    try {
+      newWin.document.open();
+      newWin.document.write(html);
+      newWin.document.close();
+    } catch (err) {
+      // If writing fails, try navigating to the image directly as a fallback
+      try { newWin.location.href = imgPath; } catch (e) { /* give up */ }
+    }
   });
 
   // Render on load if favoris container exists

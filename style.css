@@ -175,6 +175,29 @@ nav {
   background-color: #d9dadd;
 }
 
+/* Saved filters controls */
+#saved-filters-select {
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 15px;
+}
+
+#save-filters-btn {
+  background-color: #2eb466;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#save-filters-btn:hover {
+  background-color: #259b53;
+}
+
 /* Filtres actifs (sidebar gauche) */
 #informations {
   background-color: #f8f9fd;
@@ -252,6 +275,21 @@ nav {
 
 #btn-rechercher:hover {
   background-color: #2f3a57;
+}
+
+/* Save search button */
+#save-search-btn {
+  background-color: #3b7bd9;
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+#save-search-btn:hover {
+  background-color: #2f64b8;
 }
 
 /* Résultats */
