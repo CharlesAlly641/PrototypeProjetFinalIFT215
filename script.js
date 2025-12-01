@@ -362,6 +362,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }
       noEl.style.display = visibleCount === 0 ? '' : 'none';
     }
+    // --- Masquer la pagination si aucun résultat ---
+    const pagination = document.querySelector('.pagination');
+    if (pagination) {
+      pagination.style.display = visibleCount === 0 ? 'none' : 'flex';
+    }
   }
 
   function resetFilters() {

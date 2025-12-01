@@ -6,7 +6,7 @@ header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #ffffff;
+  background-color: #2eb466;
   border-bottom: 2px solid #dcdcdc;
   padding: 15px 50px;
   height: 85px; 
@@ -16,10 +16,20 @@ header {
 
 /* LOGO */
 .logo img {
-  height: 110px; 
-  width: auto;
+  height: 90px; 
+  width: 110px;
   display: block;
 }
+
+header .logo {
+  background-color: white;
+  padding: 6px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15); 
+}
+
 
 /* MENU PRINCIPAL */
 #menu-principal {
@@ -444,6 +454,42 @@ button {
   font-size: 0.95em;
   color: #333;
   transition: max-height 0.5s ease, opacity 0.4s ease, padding 0.3s ease;
+}
+
+/* -----------------------------
+   PIÈCES JOINTES (Mes candidatures)
+------------------------------ */
+
+.pieces-jointes {
+  margin-top: 25px;
+  padding-top: 15px;
+  border-top: 1px solid #d6d8de;
+}
+
+.pieces-jointes h4 {
+  font-size: 1.05em;
+  color: #2c3e66;
+  margin-bottom: 10px;
+}
+
+.pieces-jointes ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.pieces-jointes li {
+  margin-bottom: 6px;
+}
+
+.pieces-jointes a {
+  color: #3b4c6b;
+  text-decoration: none;
+  font-size: 0.95em;
+}
+
+.pieces-jointes a:hover {
+  text-decoration: underline;
+  color: #1e2d4d;
 }
 
 /* Quand actif */
