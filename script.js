@@ -53,8 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
         p.innerHTML = `Date d'enregistrement : ${new Date().toLocaleDateString()}<br>Statut : <span class="statut en-attente">Favori</span><br>${escapeHtml(f.meta)}`;
 
         const btnVoir = document.createElement('button');
-        btnVoir.className = 'btn-detail';
-        btnVoir.textContent = 'Voir la candidature';
+        btnVoir.className = 'btn-secondaire btn-voir';
+        btnVoir.textContent = 'Voir les détails';
 
         const btnRetirer = document.createElement('button');
         btnRetirer.className = 'btn-retirer';
@@ -106,12 +106,12 @@ document.addEventListener("DOMContentLoaded", () => {
         actions.className = 'offre-actions';
 
         const btnVoir = document.createElement('button');
-        btnVoir.className = 'btn-secondaire';
+        btnVoir.className = 'btn-secondaire btn-voir';
         btnVoir.textContent = 'Voir les détails';
 
         const btnSupprimer = document.createElement('button');
-        btnSupprimer.className = 'btn-delete btn-supprimer-fav';
-        btnSupprimer.textContent = '🗑️ Supprimer';
+        btnSupprimer.className = 'btn-retirer btn-supprimer-fav';
+        btnSupprimer.textContent = '🗑️ Retirer';
 
         actions.appendChild(btnVoir);
         actions.appendChild(btnSupprimer);
@@ -434,16 +434,45 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderSavedFiltersDropdown() {
-    const sel = document.getElementById('saved-filters-select');
-    if (!sel) return;
+    // Render saved filter sets into the sidebar list `#saved-filters-list`
+    const ul = document.getElementById('saved-filters-list');
+    if (!ul) return;
     const sets = getSavedFilterSets();
-    sel.innerHTML = '<option value="">Filtres enregistrés</option>';
+    ul.innerHTML = '';
+    if (!sets || sets.length === 0) {
+      const li = document.createElement('li');
+      li.textContent = 'Aucun filtre enregistré.';
+      ul.appendChild(li);
+      // ensure retirer-tout visibility updated when list is empty
+      try { updateRetirerToutButtonsVisibility(); } catch (e) {}
+      return;
+    }
     sets.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s.name;
-      opt.textContent = s.name;
-      sel.appendChild(opt);
+      const li = document.createElement('li');
+      li.className = 'saved-filter-item';
+      li.style.display = 'flex';
+      li.style.alignItems = 'center';
+      li.style.justifyContent = 'space-between';
+      li.title = 'Cliquer pour appliquer cet ensemble de filtres';
+
+      const span = document.createElement('span');
+      span.style.cursor = 'pointer';
+      span.textContent = s.name;
+      span.className = 'saved-filter-name';
+
+      const del = document.createElement('button');
+      del.className = 'btn-retirer retirer-saved-filter';
+      del.innerHTML = '✖';
+      del.setAttribute('aria-label', 'Retirer');
+      del.title = 'Retirer';
+      del.dataset.name = s.name;
+
+      li.appendChild(span);
+      li.appendChild(del);
+      ul.appendChild(li);
     });
+    // update visibility of Retirer tout buttons
+    updateRetirerToutButtonsVisibility();
   }
 
   // Recent searches (saved in localStorage): render and manage
@@ -484,16 +513,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement('li');
       li.textContent = 'Aucune recherche récente.';
       ul.appendChild(li);
+      try { updateRetirerToutButtonsVisibility(); } catch (e) {}
       return;
     }
     list.forEach(s => {
       const li = document.createElement('li');
       li.className = 'recent-search-item';
-      li.style.cursor = 'pointer';
-      li.title = 'Cliquer pour relancer cette recherche';
-      li.textContent = s;
+      li.style.display = 'flex';
+      li.style.justifyContent = 'space-between';
+      li.style.alignItems = 'center';
+
+      const span = document.createElement('span');
+      span.className = 'recent-search-text';
+      span.style.cursor = 'pointer';
+      span.title = 'Cliquer pour relancer cette recherche';
+      span.textContent = s;
+
+      const del = document.createElement('button');
+      del.className = 'btn-retirer retirer-recent-search';
+      del.innerHTML = '✖';
+      del.setAttribute('aria-label', 'Retirer');
+      del.title = 'Retirer';
+      del.dataset.term = s;
+
+      li.appendChild(span);
+      li.appendChild(del);
       ul.appendChild(li);
     });
+    updateRetirerToutButtonsVisibility();
   }
 
   // Saved searches (persisted list of saved search terms)
@@ -526,16 +573,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement('li');
       li.textContent = 'Aucune recherche enregistrée.';
       ul.appendChild(li);
+      try { updateRetirerToutButtonsVisibility(); } catch (e) {}
       return;
     }
     list.forEach(s => {
       const li = document.createElement('li');
       li.className = 'saved-search-item';
-      li.style.cursor = 'pointer';
-      li.title = 'Cliquer pour mettre dans la barre de recherche';
-      li.textContent = s;
+      li.style.display = 'flex';
+      li.style.justifyContent = 'space-between';
+      li.style.alignItems = 'center';
+
+      const span = document.createElement('span');
+      span.className = 'saved-search-text';
+      span.style.cursor = 'pointer';
+      span.title = 'Cliquer pour mettre dans la barre de recherche';
+      span.textContent = s;
+
+      const del = document.createElement('button');
+      del.className = 'btn-retirer retirer-saved-search';
+      del.innerHTML = '✖';
+      del.setAttribute('aria-label', 'Retirer');
+      del.title = 'Retirer';
+      del.dataset.term = s;
+
+      li.appendChild(span);
+      li.appendChild(del);
       ul.appendChild(li);
     });
+    updateRetirerToutButtonsVisibility();
   }
 
   // Render the active filters in the sidebar `#filtres-actifs`
@@ -545,25 +610,43 @@ document.addEventListener("DOMContentLoaded", () => {
     container.innerHTML = '';
     filters = filters || {};
     const items = [];
-    if (filters.search) items.push({ label: 'Recherche', value: filters.search });
-    if (filters.ville) items.push({ label: 'Région', value: filters.ville });
-    if (filters.salaire) items.push({ label: 'Salaire', value: (filters.salaire.toString().length ? filters.salaire + '$/h' : filters.salaire) });
-    if (filters.duree) items.push({ label: 'Durée', value: (filters.duree.toString().length ? filters.duree + ' semaines' : filters.duree) });
-    if (filters.mode) items.push({ label: 'Mode', value: filters.mode });
-    if (filters.type) items.push({ label: 'Type', value: filters.type });
+    // Do not show the free-text search term in the "Filtres actifs" list
+    // (the user requested that the current search not appear here)
+    if (filters.ville) items.push({ label: 'Région', value: filters.ville, key: 'ville' });
+    if (filters.salaire) items.push({ label: 'Salaire', value: (filters.salaire.toString().length ? filters.salaire + '$/h' : filters.salaire), key: 'salaire' });
+    if (filters.duree) items.push({ label: 'Durée', value: (filters.duree.toString().length ? filters.duree + ' semaines' : filters.duree), key: 'duree' });
+    if (filters.mode) items.push({ label: 'Mode', value: filters.mode, key: 'mode' });
+    if (filters.type) items.push({ label: 'Type', value: filters.type, key: 'type' });
 
     if (items.length === 0) {
       const li = document.createElement('li');
       li.textContent = 'Aucun filtre actif.';
       container.appendChild(li);
+      try { updateRetirerToutButtonsVisibility(); } catch (e) {}
       return;
     }
 
     items.forEach(it => {
       const li = document.createElement('li');
-      li.innerHTML = `<strong>${it.label} :</strong> ${it.value}`;
+      li.style.display = 'flex';
+      li.style.justifyContent = 'space-between';
+      li.style.alignItems = 'center';
+
+      const span = document.createElement('span');
+      span.innerHTML = `<strong>${it.label} :</strong> ${it.value}`;
+
+      const del = document.createElement('button');
+      del.className = 'btn-retirer retirer-active-filter';
+      del.innerHTML = '✖';
+      del.setAttribute('aria-label', 'Retirer');
+      del.title = 'Retirer';
+      del.dataset.filterKey = it.key;
+
+      li.appendChild(span);
+      li.appendChild(del);
       container.appendChild(li);
     });
+    updateRetirerToutButtonsVisibility();
   }
 
   function saveCurrentFilterSet() {
@@ -602,23 +685,44 @@ document.addEventListener("DOMContentLoaded", () => {
   const saveFiltersBtn = document.getElementById('save-filters-btn');
   if (saveFiltersBtn) saveFiltersBtn.addEventListener('click', saveCurrentFilterSet);
 
-  // Wire dropdown apply
-  const savedSel = document.getElementById('saved-filters-select');
-  if (savedSel) savedSel.addEventListener('change', (e) => {
-    const name = (e.target.value || '').toString();
-    if (!name) return;
-    const set = getSavedFilterSets().find(s => s.name === name);
-    if (!set || !set.filters) return;
-    const f = set.filters;
-    const mapSet = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
-    mapSet('ville-select', f.ville);
-    mapSet('salaire-select', f.salaire);
-    mapSet('duree-select', f.duree);
-    mapSet('type-select', f.type);
-    mapSet('mode-select', f.mode);
-    const comb = document.getElementById('combiner'); if (comb) comb.checked = !!f.combiner;
-    applyFilters();
-  });
+  // Wire click-to-apply for saved filters in the sidebar list
+  const savedFiltersUl = document.getElementById('saved-filters-list');
+  if (savedFiltersUl) {
+    savedFiltersUl.addEventListener('click', (e) => {
+      // Delete saved filter
+      const del = e.target.closest('.retirer-saved-filter');
+      if (del) {
+        const name = del.dataset.name;
+        if (!name) return;
+        showConfirm(`Retirer l'ensemble de filtres "${name}" ?`).then(ok => {
+          if (!ok) return;
+          let sets = getSavedFilterSets();
+          sets = sets.filter(s => s.name !== name);
+          saveSavedFilterSets(sets);
+          renderSavedFiltersDropdown();
+          showToast('Filtres retirés.');
+        });
+        return;
+      }
+
+      // Apply saved filter (click on the name)
+      const nameSpan = e.target.closest('.saved-filter-name');
+      const li = e.target.closest('.saved-filter-item');
+      const name = (nameSpan && nameSpan.textContent) || (li && li.querySelector('.saved-filter-name')?.textContent) || '';
+      if (!name) return;
+      const set = getSavedFilterSets().find(s => s.name === name);
+      if (!set || !set.filters) return;
+      const f = set.filters;
+      const mapSet = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ''; };
+      mapSet('ville-select', f.ville);
+      mapSet('salaire-select', f.salaire);
+      mapSet('duree-select', f.duree);
+      mapSet('type-select', f.type);
+      mapSet('mode-select', f.mode);
+      const comb = document.getElementById('combiner'); if (comb) comb.checked = !!f.combiner;
+      applyFilters();
+    });
+  }
 
   // initialize saved filters dropdown
   renderSavedFiltersDropdown();
@@ -629,6 +733,122 @@ document.addEventListener("DOMContentLoaded", () => {
   // initialize saved searches list
   try { renderSavedSearches(); } catch (err) { }
 
+  // Add "Retirer tout" buttons under each information section (if not present)
+  function ensureRetirerToutButtons() {
+    const sections = [
+      { ulId: 'saved-filters-list', action: 'saved-filters' },
+      { ulId: 'recent-searches-list', action: 'recent-searches' },
+      { ulId: 'saved-searches-list', action: 'saved-searches' },
+      { ulId: 'filtres-actifs', action: 'active-filters' }
+    ];
+
+    sections.forEach(s => {
+      const ul = document.getElementById(s.ulId);
+      if (!ul) return;
+      // check if button already exists (avoid duplicates)
+      const existing = document.querySelector(`.btn-retirer-tout[data-target="${s.ulId}"]`);
+      if (existing) return;
+      const btn = document.createElement('button');
+      btn.className = 'btn-retirer btn-retirer-tout';
+      // textual 'Retirer tout' button (full width)
+      btn.textContent = 'Retirer tout';
+      btn.setAttribute('aria-label', 'Retirer tout');
+      btn.title = 'Retirer tout';
+      btn.dataset.target = s.ulId;
+      btn.style.display = 'none';
+      btn.style.marginTop = '6px';
+      btn.style.width = '100%';
+      btn.style.padding = '8px 10px';
+      // insert right after the list for clearer placement
+      ul.insertAdjacentElement('afterend', btn);
+    });
+  }
+
+  function updateRetirerToutButtonsVisibility() {
+    const ids = ['saved-filters-list','recent-searches-list','saved-searches-list','filtres-actifs'];
+    ids.forEach(id => {
+      const ul = document.getElementById(id);
+      const btn = document.querySelector(`.btn-retirer-tout[data-target="${id}"]`);
+      if (!ul || !btn) return;
+      // consider list empty if it has a single li with placeholder text
+      const items = Array.from(ul.children).filter(n => n.tagName.toLowerCase() === 'li');
+      if (items.length === 0) { btn.style.display = 'none'; return; }
+      // if first item is a placeholder like 'Aucune ...' treat as empty
+      const firstText = (items[0].textContent || '').trim().toLowerCase();
+      if (firstText.startsWith('aucun') || firstText.startsWith('aucune')) { btn.style.display = 'none'; return; }
+      btn.style.display = 'block';
+    });
+  }
+
+  ensureRetirerToutButtons();
+  updateRetirerToutButtonsVisibility();
+
+  // Handle Retirer tout button clicks
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.btn-retirer-tout');
+    if (!btn) return;
+    const target = btn.dataset.target;
+    if (!target) return;
+    if (target === 'saved-filters-list') {
+      showConfirm('Retirer tous les filtres enregistrés ?').then(ok => {
+        if (!ok) return;
+        saveSavedFilterSets([]);
+        renderSavedFiltersDropdown();
+        showToast('Tous les filtres enregistrés ont été retirés.');
+      });
+      return;
+    }
+    if (target === 'recent-searches-list') {
+      showConfirm('Retirer toutes les recherches récentes ?').then(ok => {
+        if (!ok) return;
+        localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify([]));
+        renderRecentSearches();
+        showToast('Recherches récentes retirées.');
+      });
+      return;
+    }
+    if (target === 'saved-searches-list') {
+      showConfirm('Retirer toutes les recherches enregistrées ?').then(ok => {
+        if (!ok) return;
+        localStorage.setItem(SAVED_SEARCHES_KEY, JSON.stringify([]));
+        renderSavedSearches();
+        showToast('Recherches enregistrées retirées.');
+      });
+      return;
+    }
+    if (target === 'filtres-actifs') {
+      showConfirm('Retirer tous les filtres actifs ?').then(ok => {
+        if (!ok) return;
+        resetFilters();
+        applyFilters();
+        showToast('Filtres actifs retirés.');
+      });
+      return;
+    }
+  });
+
+  // Allow deleting active filters directly from the sidebar
+  const activeFiltersUl = document.getElementById('filtres-actifs');
+  if (activeFiltersUl) {
+    activeFiltersUl.addEventListener('click', (e) => {
+      const del = e.target.closest('.retirer-active-filter');
+      if (!del) return;
+      const key = del.dataset.filterKey;
+      if (!key) return;
+      // map filter key to control
+      const map = {
+        'search': () => { const el = document.getElementById('barre-recherche'); if (el) el.value = ''; },
+        'ville': () => { const el = document.getElementById('ville-select'); if (el) el.value = ''; },
+        'salaire': () => { const el = document.getElementById('salaire-select'); if (el) el.value = ''; },
+        'duree': () => { const el = document.getElementById('duree-select'); if (el) el.value = ''; },
+        'mode': () => { const el = document.getElementById('mode-select'); if (el) el.value = ''; },
+        'type': () => { const el = document.getElementById('type-select'); if (el) el.value = ''; }
+      };
+      if (map[key]) map[key]();
+      applyFilters();
+    });
+  }
+
   // If on favoris page, handle remove clicks and render
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.btn-supprimer-fav');
@@ -637,7 +857,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!parent) return;
     const id = parent.dataset.id;
     if (!id) return;
-    showConfirm('Supprimer cette offre des favoris ?').then(confirmed => {
+    showConfirm('Retirer cette offre des favoris ?').then(confirmed => {
       if (confirmed) removeFavori(id);
     });
   });
@@ -646,9 +866,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const recentUl = document.getElementById('recent-searches-list');
   if (recentUl) {
     recentUl.addEventListener('click', (e) => {
+      const del = e.target.closest('.retirer-recent-search');
+      if (del) {
+        const term = del.dataset.term;
+        if (!term) return;
+        showConfirm(`Retirer la recherche récente "${term}" ?`).then(ok => {
+          if (!ok) return;
+          let list = getRecentSearches();
+          list = list.filter(s => s !== term);
+          localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(list));
+          renderRecentSearches();
+        });
+        return;
+      }
+
+      const span = e.target.closest('.recent-search-text');
       const li = e.target.closest('.recent-search-item');
-      if (!li) return;
-      const term = li.textContent || '';
+      const term = (span && span.textContent) || (li && li.querySelector('.recent-search-text')?.textContent) || '';
+      if (!term) return;
       const input = document.getElementById('barre-recherche');
       if (input) input.value = term;
       applyFilters();
@@ -659,9 +894,24 @@ document.addEventListener("DOMContentLoaded", () => {
   const savedUl = document.getElementById('saved-searches-list');
   if (savedUl) {
     savedUl.addEventListener('click', (e) => {
+      const del = e.target.closest('.retirer-saved-search');
+      if (del) {
+        const term = del.dataset.term;
+        if (!term) return;
+        showConfirm(`Retirer la recherche enregistrée "${term}" ?`).then(ok => {
+          if (!ok) return;
+          let list = getSavedSearches();
+          list = list.filter(s => s !== term);
+          localStorage.setItem(SAVED_SEARCHES_KEY, JSON.stringify(list));
+          renderSavedSearches();
+        });
+        return;
+      }
+
+      const span = e.target.closest('.saved-search-text');
       const li = e.target.closest('.saved-search-item');
-      if (!li) return;
-      const term = li.textContent || '';
+      const term = (span && span.textContent) || (li && li.querySelector('.saved-search-text')?.textContent) || '';
+      if (!term) return;
       const input = document.getElementById('barre-recherche');
       if (input) input.value = term;
       applyFilters();
@@ -756,7 +1006,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <div class="confirm-content">
               <p id="confirm-message"></p>
               <div class="confirm-actions">
-                <button id="confirm-no" class="btn-delete">Annuler</button>
+                <button id="confirm-no" class="btn-retirer">Annuler</button>
                 <button id="confirm-yes" class="btn-secondaire">Confirmer</button>
               </div>
             </div>

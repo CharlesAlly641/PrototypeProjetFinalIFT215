@@ -75,9 +75,6 @@
         <ul id="boutons-filtres">
           <button id="appliquer">Appliquer les filtres</button>
           <button id="reinitialiser">Réinitialiser</button>
-          <select id="saved-filters-select" aria-label="Filtres enregistrés">
-            <option value="">Filtres enregistrés</option>
-          </select>
           <button id="save-filters-btn">Enregistrer les filtres</button>
         </ul>
         </fieldset>
@@ -88,6 +85,11 @@
       <aside id="informations">
         <h2>Filtres actifs</h2>
         <ul id="filtres-actifs">
+          <!-- Rempli dynamiquement par script.js -->
+        </ul>
+
+        <h2>Filtres enregistrés</h2>
+        <ul id="saved-filters-list">
           <!-- Rempli dynamiquement par script.js -->
         </ul>
 
@@ -118,7 +120,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -135,7 +137,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -152,7 +154,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -169,7 +171,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -186,7 +188,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -203,7 +205,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -220,7 +222,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -237,7 +239,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
@@ -254,7 +256,7 @@
           <div class="offre-actions">
             <button class="btn-secondaire btn-voir">Voir les détails</button>
             <button class="btn-secondaire">❤️ Ajouter aux favoris</button>
-            <button class="btn-delete">🗑️</button>
+            <button class="btn-retirer" aria-label="Retirer" title="Retirer">✖</button>
           </div>
         </div>
 
