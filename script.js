@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const useCandidaturesLayout = document.getElementById('liste-candidatures') !== null;
     favoris.forEach(f => {
       if (useCandidaturesLayout) {
-        // render as .candidature to match Mes candidatures UI
         const cand = document.createElement('div');
         cand.className = 'candidature';
         cand.dataset.id = f.id;
@@ -60,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
         btnRetirer.className = 'btn-retirer';
         btnRetirer.textContent = 'Retirer';
 
-        // details block (copy programs as a detail)
+        // Bloc de details
         const details = document.createElement('div');
         details.className = 'candidature-details';
         details.innerHTML = `<p><strong>Programmes compatibles :</strong> ${escapeHtml(f.programs)}</p>`;
@@ -142,7 +141,7 @@ document.addEventListener("DOMContentLoaded", () => {
     renderFavorisList();
   }
 
-  // Click handler for 'Ajouter aux favoris' buttons on listings
+  // Fait la gestion du bouton « Ajouter aux favoris » 
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('button');
     if (!btn) return;
@@ -167,9 +166,8 @@ document.addEventListener("DOMContentLoaded", () => {
     addFavori(offreObj);
   });
 
-  // --- Filters: apply / reset ---
+  // --- Filtres : appliquer et réinitialisation ---
   function parseMeta(metaText) {
-    // metaText example: "Lieu : Boucherville, QC | Salaire : 26$/h | Durée : 6 mois | Mode : Présentiel"
     const parts = metaText.split('|').map(p => p.trim());
     const map = {};
     parts.forEach(p => {
@@ -184,7 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function normalizeString(s) {
     if (!s) return '';
-    // remove diacritics and normalize spacing
     return s
       .toString()
       .trim()
@@ -196,7 +193,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function parseSalary(s) {
     if (!s) return null;
-    // find all numbers and return the largest (handles ranges like "18-22$/h")
     const matches = Array.from(s.matchAll(/(\d+(?:[.,]\d+)?)/g)).map(m => m[1].replace(',', '.'));
     if (!matches.length) return null;
     const nums = matches.map(n => parseFloat(n)).filter(n => !isNaN(n));
@@ -221,10 +217,8 @@ document.addEventListener("DOMContentLoaded", () => {
     return null;
   }
 
-  // Ensure each .offre has data-* attributes for fast filtering
   function ensureOfferDataAttrs(offreEl) {
     if (!offreEl) return;
-    // if already populated, skip
     if (offreEl.dataset._normalized === '1') return;
     const header = offreEl.querySelector('.offre-header > div');
     if (!header) return;
@@ -232,29 +226,27 @@ document.addEventListener("DOMContentLoaded", () => {
     const metaText = pTags[1] ? pTags[1].textContent.trim() : '';
     const meta = parseMeta(metaText);
 
-    // Ville (first token before comma), normalized
+    // Ville 
     const ville = (meta['lieu'] || meta['ville'] || '').split(',')[0].trim();
     if (ville) offreEl.dataset.ville = normalizeString(ville);
 
-    // Salaire number (try meta first, otherwise search entire header text)
+    // Numero de salaire
     let salaire = parseSalary(meta['salaire']);
     const headerText = header.textContent || '';
     if (salaire === null) {
       salaire = parseSalary(headerText);
     }
     if (salaire !== null) offreEl.dataset.salaire = String(salaire);
-    // also store all salaries found (for exact-match filtering)
     const salList = parseSalaryAll(meta['salaire'] || headerText);
     if (salList.length) offreEl.dataset.salaireList = salList.join(',');
 
-    // Durée in weeks
+    // Durée en semaine
     const dureeWeeks = parseDureeToWeeks(meta['durée'] || meta['duree'] || '');
     if (dureeWeeks !== null) offreEl.dataset.dureeWeeks = String(dureeWeeks);
 
-    // Mode normalized
+    // Mode normalisé
     if (meta['mode']) offreEl.dataset.mode = normalizeString(meta['mode']);
 
-    // Type: try existing data-type, otherwise try to infer from text (pme/ge)
     if (!offreEl.dataset.type) {
       const text = (offreEl.textContent || '').toLowerCase();
       if (text.indexOf('pme') !== -1) offreEl.dataset.type = 'pme';
@@ -264,7 +256,7 @@ document.addEventListener("DOMContentLoaded", () => {
       offreEl.dataset.type = normalizeString(offreEl.dataset.type);
     }
 
-    // mark normalized
+    // marque normalisé
     offreEl.dataset._normalized = '1';
   }
 
@@ -279,7 +271,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const metaText = pTags[1] ? pTags[1].textContent.trim() : '';
     const meta = parseMeta(metaText);
 
-    // Prefer data-* attributes when available, otherwise parse & normalize
     const villeVal = offreEl.dataset.ville || normalizeString(meta['lieu'] || meta['ville'] || '');
     const salaireVal = (offreEl.dataset.salaire ? parseFloat(offreEl.dataset.salaire) : parseSalary(meta['salaire'] || ''));
     const salaireList = offreEl.dataset.salaireList ? (offreEl.dataset.salaireList.split(',').map(n => parseFloat(n)).filter(n => !isNaN(n))) : parseSalaryAll(meta['salaire'] || '');
@@ -309,7 +300,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (filters.duree) {
       const targetWeeks = parseInt(filters.duree, 10);
-      // require exact match for duration (in weeks) — same behaviour as salaire exact-match
+      // Il faut exiger une correspondance exacte pour la durée (en semaines) et même pour le salaire 
       checks.push(!isNaN(targetWeeks) && dureeWeeks !== null && dureeWeeks === targetWeeks);
     }
 
@@ -323,7 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
       checks.push(modeVal && modeVal.indexOf(m) !== -1);
     }
 
-    // Search term: match company, title or any text
+    // Terme de recherche correspond-tu à une l’entreprise, un titre ou tout autre texte?
     if (filters.search) {
       const s = normalizeString(filters.search);
       if (s.length === 0) {
@@ -338,7 +329,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     if (checks.length === 0) return true;
-    // Combine multiple active filters using AND: all checks must pass
+    // Combine plusieurs filtres actifs 
     return checks.every(Boolean);
   }
 
@@ -353,11 +344,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const filters = { ville, salaire, duree, type, mode, combiner, search };
 
-    // Save recent search term (if any)
+    // Sauvegarde la recherche récente 
     try { if (search && search.toString().trim().length) saveRecentSearch(search); } catch (err) { }
-    // do not auto-save to 'saved searches' — that's explicit with "Enregistrer la recherche" button
 
-    // Ensure data attrs exist for all offers
+    // Assure que toutes les offres ont les attributs nécessaires
     normalizeAllOffers();
     const offres = Array.from(document.querySelectorAll('.offre'));
     let visibleCount = 0;
@@ -367,7 +357,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (visible) visibleCount++;
     });
 
-    // Show no-results message when none match
+    // Affiche "aucun résultat" lorsqu'aucune offre ne correspond à la recherche voulu
     const resultArea = document.getElementById('resultats');
     if (resultArea) {
       let noEl = document.getElementById('no-results-msg');
@@ -386,8 +376,8 @@ document.addEventListener("DOMContentLoaded", () => {
     if (pagination) {
       pagination.style.display = visibleCount === 0 ? 'none' : 'flex';
     }
-    // Update the active filters display
-    try { renderActiveFilters(filters); } catch (err) { /* ignore if not available */ }
+    // Mise a jour de l’affichage des filtres actifs
+    try { renderActiveFilters(filters); } catch (err) {  }
   }
 
   function resetFilters() {
@@ -397,28 +387,28 @@ document.addEventListener("DOMContentLoaded", () => {
       if (el) el.value = '';
     });
     const comb = document.getElementById('combiner'); if (comb) comb.checked = false;
-    // show all and hide no-results
+    // Affiche toutes les offres necessaire et masque le message "aucun résultat"
     document.querySelectorAll('.offre').forEach(o => o.style.display = '');
     const noEl = document.getElementById('no-results-msg'); if (noEl) noEl.style.display = 'none';
-    // clear search input
+    // Vide la barre de recherche
     const searchInput = document.getElementById('barre-recherche'); if (searchInput) searchInput.value = '';
-    // update active filters display
+    // Mise a jour de l’affichage des filtres actifs
     try { renderActiveFilters({}); } catch (err) { }
   }
 
-  // Bind buttons
+  // Lie les boutons aux fonctions respectieves
   const btnAppliquer = document.getElementById('appliquer');
   if (btnAppliquer) btnAppliquer.addEventListener('click', applyFilters);
   const btnReset = document.getElementById('reinitialiser');
   if (btnReset) btnReset.addEventListener('click', resetFilters);
 
-  // Wire search button and Enter key on search input
+  // Relie le bouton de recherche au bouton Enter dans la barre de recherche 
   const btnSearch = document.getElementById('btn-rechercher');
   const searchInput = document.getElementById('barre-recherche');
   if (btnSearch) btnSearch.addEventListener('click', applyFilters);
   if (searchInput) searchInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } });
 
-  // --- Saved filter sets (localStorage) ---
+  // --- Ensembles de filtres enregistrés ---
   const SAVED_FILTERS_KEY = 'saved_filter_sets';
 
   function getSavedFilterSets() {
@@ -434,7 +424,7 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function renderSavedFiltersDropdown() {
-    // Render saved filter sets into the sidebar list `#saved-filters-list`
+    // Affiche les ensembles de filtres enregistrés dans la liste #saved-filters-list
     const ul = document.getElementById('saved-filters-list');
     if (!ul) return;
     const sets = getSavedFilterSets();
@@ -443,7 +433,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const li = document.createElement('li');
       li.textContent = 'Aucun filtre enregistré.';
       ul.appendChild(li);
-      // ensure retirer-tout visibility updated when list is empty
+      // S'assure que le bouton "Retirer tout" est mis à jour quand la liste est vide
       try { updateRetirerToutButtonsVisibility(); } catch (e) {}
       return;
     }
@@ -471,11 +461,11 @@ document.addEventListener("DOMContentLoaded", () => {
       li.appendChild(del);
       ul.appendChild(li);
     });
-    // update visibility of Retirer tout buttons
+    // Mise a jour de la visibilité de Retirer tout buttons
     updateRetirerToutButtonsVisibility();
   }
 
-  // Recent searches (saved in localStorage): render and manage
+  // Recherches récentes: affichage et gestion
   const RECENT_SEARCHES_KEY = 'recent_searches';
 
   function getRecentSearches() {
@@ -492,15 +482,13 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!t) return;
       let list = getRecentSearches();
       const lower = t.toLowerCase();
-      // remove duplicates (case-insensitive)
+      // Enleve les dupliqués
       list = list.filter(s => s.toLowerCase() !== lower);
       list.unshift(t);
-      // keep only most recent 6
       if (list.length > 6) list = list.slice(0, 6);
       localStorage.setItem(RECENT_SEARCHES_KEY, JSON.stringify(list));
       renderRecentSearches();
     } catch (err) {
-      // ignore
     }
   }
 
@@ -543,7 +531,7 @@ document.addEventListener("DOMContentLoaded", () => {
     updateRetirerToutButtonsVisibility();
   }
 
-  // Saved searches (persisted list of saved search terms)
+  // Recherche sauvegardée
   const SAVED_SEARCHES_KEY = 'saved_searches';
 
   function getSavedSearches() {
@@ -554,7 +542,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const t = (term || '').toString().trim();
     if (!t) { showToast('Recherche vide — impossible d\'enregistrer.'); return; }
     let list = getSavedSearches();
-    // remove duplicates (case-insensitive)
     const lower = t.toLowerCase();
     list = list.filter(s => s.toLowerCase() !== lower);
     list.unshift(t);
@@ -603,15 +590,13 @@ document.addEventListener("DOMContentLoaded", () => {
     updateRetirerToutButtonsVisibility();
   }
 
-  // Render the active filters in the sidebar `#filtres-actifs`
+  // Affiche les filtres actifs dans la barre du coté `#filtres-actifs`
   function renderActiveFilters(filters) {
     const container = document.getElementById('filtres-actifs');
     if (!container) return;
     container.innerHTML = '';
     filters = filters || {};
     const items = [];
-    // Do not show the free-text search term in the "Filtres actifs" list
-    // (the user requested that the current search not appear here)
     if (filters.ville) items.push({ label: 'Région', value: filters.ville, key: 'ville' });
     if (filters.salaire) items.push({ label: 'Salaire', value: (filters.salaire.toString().length ? filters.salaire + '$/h' : filters.salaire), key: 'salaire' });
     if (filters.duree) items.push({ label: 'Durée', value: (filters.duree.toString().length ? filters.duree + ' semaines' : filters.duree), key: 'duree' });
@@ -681,15 +666,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Wire save button
+  // Relie le bouton d’enregistrement de filtres
   const saveFiltersBtn = document.getElementById('save-filters-btn');
   if (saveFiltersBtn) saveFiltersBtn.addEventListener('click', saveCurrentFilterSet);
 
-  // Wire click-to-apply for saved filters in the sidebar list
+  // Relie le clic pour appliquer un ensemble de filtres enregistrés à partir de la liste latérale
   const savedFiltersUl = document.getElementById('saved-filters-list');
   if (savedFiltersUl) {
     savedFiltersUl.addEventListener('click', (e) => {
-      // Delete saved filter
+      // Supprime un ensemble de filtres enregistré
       const del = e.target.closest('.retirer-saved-filter');
       if (del) {
         const name = del.dataset.name;
@@ -705,7 +690,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      // Apply saved filter (click on the name)
+      // Applique les filtres sauvegardés
       const nameSpan = e.target.closest('.saved-filter-name');
       const li = e.target.closest('.saved-filter-item');
       const name = (nameSpan && nameSpan.textContent) || (li && li.querySelector('.saved-filter-name')?.textContent) || '';
@@ -724,16 +709,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // initialize saved filters dropdown
+  // Initialise le menu déroulant des filtres enregistrés
   renderSavedFiltersDropdown();
-  // initialize active filters display (none active at start)
+
+  // Initialise l’affichage des filtres actifs s'assurant qu'aucun sont actif au départ
   try { renderActiveFilters({}); } catch (err) { }
-  // initialize recent searches list
+
+  // Initialise la liste des recherches récentes
   try { renderRecentSearches(); } catch (err) { }
-  // initialize saved searches list
+
+  // Initialise la liste des recherches sauvegardées
   try { renderSavedSearches(); } catch (err) { }
 
-  // Add "Retirer tout" buttons under each information section (if not present)
+  // Ajoute les boutons « Retirer tout » sous chaque section d’informations 
   function ensureRetirerToutButtons() {
     const sections = [
       { ulId: 'saved-filters-list', action: 'saved-filters' },
@@ -742,15 +730,15 @@ document.addEventListener("DOMContentLoaded", () => {
       { ulId: 'filtres-actifs', action: 'active-filters' }
     ];
 
+
     sections.forEach(s => {
       const ul = document.getElementById(s.ulId);
       if (!ul) return;
-      // check if button already exists (avoid duplicates)
+      // Vérifie si le bouton existe déjà pour éviter les doublons
       const existing = document.querySelector(`.btn-retirer-tout[data-target="${s.ulId}"]`);
       if (existing) return;
       const btn = document.createElement('button');
       btn.className = 'btn-retirer btn-retirer-tout';
-      // textual 'Retirer tout' button (full width)
       btn.textContent = 'Retirer tout';
       btn.setAttribute('aria-label', 'Retirer tout');
       btn.title = 'Retirer tout';
@@ -759,7 +747,6 @@ document.addEventListener("DOMContentLoaded", () => {
       btn.style.marginTop = '6px';
       btn.style.width = '100%';
       btn.style.padding = '8px 10px';
-      // insert right after the list for clearer placement
       ul.insertAdjacentElement('afterend', btn);
     });
   }
@@ -770,10 +757,8 @@ document.addEventListener("DOMContentLoaded", () => {
       const ul = document.getElementById(id);
       const btn = document.querySelector(`.btn-retirer-tout[data-target="${id}"]`);
       if (!ul || !btn) return;
-      // consider list empty if it has a single li with placeholder text
       const items = Array.from(ul.children).filter(n => n.tagName.toLowerCase() === 'li');
       if (items.length === 0) { btn.style.display = 'none'; return; }
-      // if first item is a placeholder like 'Aucune ...' treat as empty
       const firstText = (items[0].textContent || '').trim().toLowerCase();
       if (firstText.startsWith('aucun') || firstText.startsWith('aucune')) { btn.style.display = 'none'; return; }
       btn.style.display = 'block';
@@ -783,7 +768,7 @@ document.addEventListener("DOMContentLoaded", () => {
   ensureRetirerToutButtons();
   updateRetirerToutButtonsVisibility();
 
-  // Handle Retirer tout button clicks
+  // Gère les clics sur le bouton « Retirer tout »
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.btn-retirer-tout');
     if (!btn) return;
@@ -827,7 +812,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Allow deleting active filters directly from the sidebar
+  // Permet la suppression directe des filtres actifs avec la barre latérale
   const activeFiltersUl = document.getElementById('filtres-actifs');
   if (activeFiltersUl) {
     activeFiltersUl.addEventListener('click', (e) => {
@@ -835,7 +820,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!del) return;
       const key = del.dataset.filterKey;
       if (!key) return;
-      // map filter key to control
+      // Associe la clé du filtre à son élément de contrôle
       const map = {
         'search': () => { const el = document.getElementById('barre-recherche'); if (el) el.value = ''; },
         'ville': () => { const el = document.getElementById('ville-select'); if (el) el.value = ''; },
@@ -849,7 +834,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // If on favoris page, handle remove clicks and render
+  // Si on se trouve sur la page des favoris, on gère ici les clics de suppression et l’affichage
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.btn-supprimer-fav');
     if (!btn) return;
@@ -862,7 +847,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Click-to-reuse for recent searches: delegate to the list
+  // Permet de relancer une recherche récente en cliquant dans la liste
   const recentUl = document.getElementById('recent-searches-list');
   if (recentUl) {
     recentUl.addEventListener('click', (e) => {
@@ -890,7 +875,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Click-to-use for saved searches
+  // Nous permet de réutiliser une recherche enregistrée avec un clic
   const savedUl = document.getElementById('saved-searches-list');
   if (savedUl) {
     savedUl.addEventListener('click', (e) => {
@@ -918,7 +903,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Wire save-search button
+  // Relie le bouton d’enregistrement de recherche
   const saveSearchBtn = document.getElementById('save-search-btn');
   if (saveSearchBtn) saveSearchBtn.addEventListener('click', () => {
     const term = (document.getElementById('barre-recherche')?.value || '').toString().trim();
@@ -926,11 +911,11 @@ document.addEventListener("DOMContentLoaded", () => {
     saveSavedSearch(term);
   });
 
-  // Open a new tab showing the screenshot and a Retour button
+  // Ouvre l'onglet avec le screenshot et le btn de retour
   document.addEventListener('click', (e) => {
     const btn = e.target.closest('.btn-voir');
     if (!btn) return;
-    // try to open a new tab/window
+    // essai d'ouvrir un onglet
     const newWin = window.open('', '_blank');
     if (!newWin) {
       showToast('Impossible d\'ouvrir un nouvel onglet (popup bloquée).');
@@ -962,12 +947,11 @@ document.addEventListener("DOMContentLoaded", () => {
       newWin.document.write(html);
       newWin.document.close();
     } catch (err) {
-      // If writing fails, try navigating to the image directly as a fallback
-      try { newWin.location.href = imgPath; } catch (e) { /* give up */ }
+      try { newWin.location.href = imgPath; } catch (e) {  }
     }
   });
 
-  // Render on load if favoris container exists
+// Affiche les favoris au chargement de la page
   renderFavorisList();
 
   // --- Notif toast ---
@@ -986,7 +970,7 @@ document.addEventListener("DOMContentLoaded", () => {
     t.className = 'toast';
     t.textContent = message;
     container.appendChild(t);
-    // enter animation
+    // rentrer dans animation
     requestAnimationFrame(() => t.classList.add('show'));
     setTimeout(() => {
       t.classList.remove('show');
