@@ -396,27 +396,6 @@ nav {
   background-color: #f3f3f3;
 }
 
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-  margin-top: 20px;
-}
-
-.pagination .page {
-  border: 1px solid #ccc;
-  padding: 6px 12px;
-  border-radius: 4px;
-  background-color: #fff;
-  cursor: pointer;
-}
-
-.pagination .page.active {
-  background-color: #3b4c6b;
-  color: white;
-  border-color: #3b4c6b;
-}
 
 /* -----------------------------
    PAGE "MES CANDIDATURES"       
