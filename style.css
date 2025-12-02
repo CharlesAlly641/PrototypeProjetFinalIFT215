@@ -80,7 +80,7 @@ nav {
 }
 
 /* -----------------------------
-   FILTRES INDEX (Page principale)
+   FILTRES (Page principale)
 ------------------------------ */
 
 #filtres {
@@ -175,7 +175,7 @@ nav {
   background-color: #d9dadd;
 }
 
-/* Saved filters controls */
+/* Filtres enregistrés */
 #saved-filters-select {
   padding: 10px;
   border-radius: 6px;
@@ -277,7 +277,7 @@ nav {
   background-color: #2f3a57;
 }
 
-/* Save search button */
+/* Bouton pour l'enregistrement de recherche */
 #save-search-btn {
   background-color: #3b7bd9;
   color: white;
@@ -365,7 +365,7 @@ nav {
   background-color: #f3f3f3;
 }
 
-/* Retirer tout (compact) */
+/* Retirer tout */
 .btn-retirer-tout {
   font-size: 14px;
   padding: 8px 10px;
@@ -383,7 +383,6 @@ nav {
   background: #f4f6f8;
 }
 
-/* Retirer buttons use the same styling as delete buttons */
 .btn-retirer {
   background-color: #fff;
   border: 1px solid #ccc;
@@ -575,7 +574,6 @@ button {
   opacity: 1;
 }
 
-/* Confirm modal styles */
 #confirm-modal {
   display: none;
   position: fixed;
@@ -619,7 +617,7 @@ button {
   color: #fff;
 }
 
-/* style for modal 'Annuler' button - accept both old and new class names */
+/* Bouton d'annulation */
 #confirm-modal .confirm-actions .btn-retirer {
   background-color: #eee;
   border: 1px solid #ccc;
