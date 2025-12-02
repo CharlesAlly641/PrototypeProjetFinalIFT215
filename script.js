@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // --- Favoris: gestion via localStorage ---
   const FAVORIS_KEY = 'favoris_offres';
 
+  // Lit la liste des favoris
   function getFavoris() {
     try {
       return JSON.parse(localStorage.getItem(FAVORIS_KEY) || '[]');
@@ -16,7 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
       return [];
     }
   }
-
+  // Sauvegarde la liste des favoris
   function saveFavoris(list) {
     localStorage.setItem(FAVORIS_KEY, JSON.stringify(list));
   }
@@ -28,6 +29,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Permet d'afficher les favoris dans la section de la page "Mes favoris"
   function renderFavorisList() {
     const container = document.getElementById('liste-favoris');
     if (!container) return;
@@ -123,6 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  // Ajoute une offre aux favoris
   function addFavori(offreObj) {
     const list = getFavoris();
     if (list.find(f => f.id === offreObj.id)) {
@@ -133,7 +136,7 @@ document.addEventListener("DOMContentLoaded", () => {
     saveFavoris(list);
     showToast('Offre ajoutée aux favoris.');
   }
-
+  // Retire une offre des favoris
   function removeFavori(id) {
     let list = getFavoris();
     list = list.filter(f => f.id !== id);
@@ -217,6 +220,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return null;
   }
 
+  // Normalise les données pour bien pouvoir les analyser à partir des filtres
   function ensureOfferDataAttrs(offreEl) {
     if (!offreEl) return;
     if (offreEl.dataset._normalized === '1') return;
@@ -264,6 +268,7 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll('.offre').forEach(ensureOfferDataAttrs);
   }
 
+  // Détermine si les offres correspondent aux filtres
   function offerMatchesFilters(offreEl, filters) {
     const header = offreEl.querySelector('.offre-header > div');
     if (!header) return false;
@@ -333,6 +338,7 @@ document.addEventListener("DOMContentLoaded", () => {
     return checks.every(Boolean);
   }
 
+  // Application des filtres
   function applyFilters() {
     const ville = document.getElementById('ville-select')?.value || '';
     const salaire = document.getElementById('salaire-select')?.value || '';
@@ -380,6 +386,7 @@ document.addEventListener("DOMContentLoaded", () => {
     try { renderActiveFilters(filters); } catch (err) {  }
   }
 
+  // Réinitialise les filtres
   function resetFilters() {
     const ids = ['ville-select','salaire-select','duree-select','type-select','mode-select'];
     ids.forEach(id => {
@@ -954,7 +961,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Affiche les favoris au chargement de la page
   renderFavorisList();
 
-  // --- Notif toast ---
+  // --- Notif toast (Pop-up) ---
   // Creation du container
   (function createToastContainer(){
     if (document.getElementById('toast-container')) return;
